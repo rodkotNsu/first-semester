@@ -1,0 +1,171 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <assert.h>
+#include <locale.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAXLENOFWHOLEPART 1100
+#define MAXLENOFFRUCTPART 16
+
+int looking_for_char(char* str, char symbol) {
+
+	char* pip = strchr(str, symbol);
+	if (&str[0] <= pip && &str[strlen(str) - 1] >= pip)
+		return (int)(pip - &str[0]);
+	else
+		return -1;
+}
+int convert_symbol_to_int(char symbol) {
+	if (symbol >= '0' && symbol <= '9')
+		return (int)(symbol - '0');
+	else if (symbol >= 'a' && symbol <= 'z')
+		return (int)(symbol - 'a' + 10);
+	else if (symbol >= 'A' && symbol <= 'Z')
+		return (int)(symbol - 'A' + 10);
+	else
+		return -1;
+}
+char convert_int_to_symbol(int digit) {
+	if (digit >= 0 && digit <= 9)
+		return (char)(digit + '0');
+	else if (digit >= 10 && digit <= 30)
+		return (char)(digit + 'a' - 10);
+	else
+		return -1;
+}
+void reverse_part_of_array(char* arr, int start, int finish)
+{
+	for (int i = start; i <= (start + finish) / 2; i++) {
+		int tmp = arr[i];
+		arr[i] = arr[finish + start - i];
+		arr[finish + start - i] = tmp;
+	}
+
+}
+long long int_part_of_digit(double digit) {
+	return (long long)trunc(digit);
+}
+double float_part_of_digit(double digit) {
+	return digit - trunc(digit);
+}
+double to_decimal(char* input, unsigned source_ns) {
+	double result = 0;
+
+	if (input == NULL)
+		return -1;
+
+	const int len_of_input = strlen(input) - 1;
+
+	int point = looking_for_char(input, '.');
+	int ch_before_point = -1;
+
+
+	if (point == 0 || point == len_of_input - 1)
+		return -1;
+
+	if (point == -1)
+		point = len_of_input - 1;
+	else
+		point--;
+
+
+	for (int i = 0; i < len_of_input; i++) {
+		if (input[i] == '.') {
+			ch_before_point = 0;
+			continue;
+		}
+
+		int ch = convert_symbol_to_int(input[i]);
+		if (ch_before_point != -1)
+
+
+			if (ch > 0)
+				ch_before_point++;
+
+
+		if (ch == -1 || (unsigned long long)ch >= source_ns)
+			return -1;
+
+
+
+		result += (ch * pow(source_ns, point));
+		point--;
+	}
+	if ((ch_before_point == 0 && result == 0)) {
+		return -1;
+	}
+	return result;
+}
+char* from_decimal(double input, unsigned target_ns) {
+	char* result = (char*)malloc((MAXLENOFWHOLEPART + MAXLENOFWHOLEPART) * sizeof(char*));
+ 
+	long long  c = int_part_of_digit(input);
+	double f = float_part_of_digit(input);
+	int i = 0;
+
+	while (c > 0 || i == 0) {
+		result[i] = (char)convert_int_to_symbol(c % target_ns);
+		c /= target_ns;
+		i++;
+	}
+	 
+	reverse_part_of_array(result, 0, i-1);
+	
+	if (f != 0)  {
+		int jf = 0;
+		result[i] = '.';
+		i++;
+
+		while (jf < MAXLENOFFRUCTPART && f!=0) {
+			f *= target_ns;
+			c = int_part_of_digit(f);
+			f = float_part_of_digit(f);
+			result[i] = convert_int_to_symbol(c);
+			jf++;
+			i++;
+		}
+	}
+	result[i] = '\0';
+	return result;
+
+}
+void error() {
+	printf("bad input");
+	exit(1);
+}
+int main() {
+	setlocale(LC_ALL, "USA");
+	int in_num_sys, out_num_sys;
+	char inputt[MAXLENOFWHOLEPART];
+	double part_result_demical = 0;
+
+	if (!scanf("%d %d\n", &in_num_sys, &out_num_sys))
+		error();
+	else
+		if (!(in_num_sys > 1 && in_num_sys < 34) || !(out_num_sys > 1 && out_num_sys < 34))
+			error();
+
+	if (!fgets(inputt, MAXLENOFWHOLEPART, stdin))
+		error();
+
+
+
+
+	part_result_demical = to_decimal(inputt, in_num_sys);
+	if (part_result_demical < 0)
+		error();
+
+	else {
+		char* inn = from_decimal(part_result_demical, out_num_sys);
+		puts(inn);
+	 
+
+		free(inn);
+
+	}
+
+	return 0;
+}
+
