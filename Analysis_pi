@@ -1,0 +1,46 @@
+
+#define _USE_MATH_DEFINES
+
+#include <stdio.h>
+#include <math.h>
+
+#include <stdlib.h>
+#include <time.h>
+
+ 
+
+ 
+#define MAX 1000000
+#define MAXLENGTH 1000000
+ float arr[MAXLENGTH][2];
+float sqr(float a){
+  return a*a;
+}
+float estimate_pi(int n){
+	int inside =0;
+	int outside= 0;
+	for (int i = 0;i<n ;i++){
+if(sqr(arr[i][0])+sqr(arr[i][1])<=1) 
+  inside++;
+  else 
+  outside++;		
+	}
+return 4*(inside/(float)n);
+}
+int main(void) {
+  int n=(int)pow(10,6);
+  srand ( time(NULL) );
+
+ 
+  for (int i=0;i<n+1;i++){
+	  arr[i][0]=rand()%n/(float)n;
+	  arr[i][1]=rand()%n/(float)n ;
+	  }
+	  for(int i =1;i<7;i++){
+		  float pi_=estimate_pi(pow(10,i));
+  printf("Count: %d Pi: %f %f\n",(int)pow(10,i),pi_ ,M_PI-pi_);
+	  }
+
+  
+  return 0;
+}
