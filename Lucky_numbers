@@ -1,0 +1,33 @@
+#include <stdio.h>
+ 
+int arr[1000] = {0};
+
+unsigned long long sqr(unsigned long long n) {
+	return n * n;
+}
+int rec(int h, int summ) {
+	if (h == 0) {
+		arr[summ] += 1;
+		return 0;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		rec(h - 1, summ + i);
+	}
+	return 0;
+}
+
+int main(void) {
+	int n;
+
+	printf("Размер билета\n");
+ 
+	scanf("%d", &n);
+	rec(n / 2, 0);
+	unsigned long long count = 0;
+	for (int i = 0; i < 9 * (n / 2) + 1; i++)
+		count += sqr(arr[i]);
+	printf("Количество счатливых билетов: %llu\n", count);
+	 
+	return 0;
+}
