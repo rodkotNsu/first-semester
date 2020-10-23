@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <locale.h>  
+#define MAXLENGTH 1000
+ 
+int max(int a, int b) {
+	if (a > b)
+		return a;
+	else
+		return b;
+}
+int min(int a, int b)
+{
+	if (a < b)
+		return a;
+	else
+		return b;
+
+}
+void sort_buble(float arr[MAXLENGTH], int n) {
+	for (int i = n - 1; i >= 0; i--) {
+		int noSwap = 1;
+		for (int j = 0; j < i; j++) {
+			if (arr[j] > arr[j + 1])
+			{
+				noSwap = 0;
+				int temp = arr[j];
+				arr[j] = (arr)[j + 1];
+				(arr)[j + 1] = temp;
+
+
+			}
+		}
+		if (noSwap == 1) break;
+	}
+
+
+
+}
+void generate_stats(float *arr , int n) {
+	float summ = arr[0];
+	int rise_max = 0;
+	int same_max = 0;
+	int rise = 1;
+	int same = 1;
+
+	for (int i = 1; i < n; i++) {
+
+		summ = summ + arr[i];
+
+		if (arr[i - 1] <= arr[i]) {
+			rise += 1;
+		}
+		else {
+			rise_max = max(rise_max, rise);
+			rise = 1;
+		}
+		if (arr[i - 1] == arr[i]) {
+			same += 1;
+		}
+		else {
+			same_max = max(same_max, same);
+			same = 1;
+		}
+	}
+	rise_max = max(rise_max, rise);
+	same_max = max(same_max, same);
+
+
+	sort_buble(arr, n);
+
+	printf("Среднее арифметическое: %f\n", (float)summ / n);
+	printf("Минимум: %f\n", arr[0]);
+	printf("Максимум: %f\n", arr[n - 1]);
+
+	if (n % 2 == 0)
+		printf("Медиана массива: %f\n", (float)(arr[n / 2] + arr[n / 2 + 1]) / (float)2);
+	else
+		printf("Медиана массива: %f\n", arr[n / 2]);
+
+	printf("Максимальную длину неубывающей последовательности: %d\n", rise_max);
+	printf("Максимальное число идущих подряд одинаковых элементов: %d\n", same_max);
+
+
+}
+int main(void) {
+	setlocale(LC_ALL, "Rus");
+	int n;
+	float arr[MAXLENGTH] = { 0 };
+	printf("Размер массива\n");
+	scanf("%d", &n);
+	printf("Элементы массива:\n");
+	for (int i = 0; i < n; i++)
+		scanf("%f", &arr[i]);
+
+	generate_stats(arr, n);
+
+
+
+	return 0;
+}
