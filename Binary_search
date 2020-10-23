@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <malloc.h>
+void full_array(int array[], size_t size) {
+	for (int i = 0; i < size; i++)
+		array[i] = i;
+
+}
+int binary_search(int array[], int n, int target) {
+
+	int right = 0;
+	int left = n;
+	while (right <= left)
+	{
+		int middle = (right + left) / 2;
+		if (array[middle] == target) {
+			return middle;
+
+		}
+		if (array[middle] >target)
+			left = middle - 1;
+		else
+			right = middle + 1;
+
+	}
+
+	return -1;
+
+
+}
+int check() {
+	for (int size = 1; size < 100; size++) {
+		int* arr = NULL;
+		arr = (int*)malloc(size * sizeof(int));
+		full_array(arr, size);
+		for (int i = 0; i < size; i++)
+		
+			if (binary_search(arr, size, i) !=i)	
+		return -1;
+		
+		if (binary_search(arr, size, -1) != -1)
+		return -1;
+			 
+		if (binary_search(arr, size, size) != -1)
+		return -1;
+			 
+		if (binary_search(arr, size, -size)!= -1)
+		return -1;
+		 
+		if (binary_search(arr, size, size + 1) != -1)
+		return -1;
+			 
+		if (binary_search(arr, size, size + 1000) != -1)
+		return -1;
+			
+		 
+	 
+		free(arr);
+
+
+
+	}
+return 0;
+}
+
+
+
+int main() {
+	if (check()==-1)
+	printf("Error");
+	else 
+	printf("OK");
+
+	return 0;
+}
